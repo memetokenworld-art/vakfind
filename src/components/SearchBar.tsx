@@ -53,8 +53,8 @@ export function SearchBar() {
 
   return (
     <div className="relative mx-auto w-full max-w-[560px]">
-      <div className="flex flex-col items-stretch gap-3 sm:flex-row sm:items-center sm:justify-center">
-        <div className="flex items-center gap-2 border-b border-gray-200 px-1 py-2 sm:w-64 sm:border-b-0">
+      <div className="flex flex-col items-stretch gap-2 sm:flex-row sm:items-center sm:justify-center">
+        <div className="flex items-center gap-2 rounded-md border border-gray-300 bg-white px-3 py-2.5 sm:w-64">
           <SearchIcon className="h-4 w-4 shrink-0 text-gray-400" />
           <input
             type="text"
@@ -66,7 +66,7 @@ export function SearchBar() {
           />
         </div>
 
-        <div className="flex items-center gap-2 border-b border-gray-200 px-1 py-2 sm:w-36 sm:border-b-0">
+        <div className="flex items-center gap-2 rounded-md border border-gray-300 bg-white px-3 py-2.5 sm:w-36">
           <PinIcon className="h-4 w-4 shrink-0 text-gray-400" />
           <input
             type="text"
@@ -79,7 +79,7 @@ export function SearchBar() {
 
         <button
           type="button"
-          className="shrink-0 rounded bg-vak-navy px-6 py-2 text-sm font-semibold text-vak-gold transition hover:bg-vak-navy-light"
+          className="shrink-0 rounded-md bg-vak-navy px-6 py-2.5 text-sm font-semibold text-vak-gold transition hover:bg-vak-navy-light"
         >
           Zoeken
         </button>
