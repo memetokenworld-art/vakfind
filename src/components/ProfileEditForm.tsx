@@ -10,6 +10,8 @@ type Category = { id: string; name: string };
 type Props = {
   professionalId: string;
   initial: {
+    city: string | null;
+    postalCode: string | null;
     bio: string | null;
     yearsOfExperience: number | null;
     hasOwnTools: boolean;
@@ -38,6 +40,8 @@ export function ProfileEditForm({
   profileCompleteness,
   vakScore,
 }: Props) {
+  const [city, setCity] = useState(initial.city ?? "");
+  const [postalCode, setPostalCode] = useState(initial.postalCode ?? "");
   const [bio, setBio] = useState(initial.bio ?? "");
   const [years, setYears] = useState(initial.yearsOfExperience?.toString() ?? "");
   const [hasOwnTools, setHasOwnTools] = useState(initial.hasOwnTools);
@@ -67,6 +71,20 @@ export function ProfileEditForm({
   const handleSave = async () => {
     setSubmitting(true);
     setError(null);
+
+    const { error: locationError } = await supabase
+      .from("profiles")
+      .update({
+        city: city.trim() || null,
+        postal_code: postalCode.trim() || null,
+      })
+      .eq("id", professionalId);
+
+    if (locationError) {
+      setError(locationError.message);
+      setSubmitting(false);
+      return;
+    }
 
     const { error: updateError } = await supabase
       .from("professional_profiles")
@@ -128,6 +146,33 @@ export function ProfileEditForm({
       <p className="mt-2 text-xs text-gray-400">VakScore: {Math.round(vakScore)}</p>
 
       <div className="mt-8 space-y-5">
+        <div className="grid grid-cols-2 gap-4">
+          <div>
+            <label className="text-sm font-semibold text-vak-navy">
+              Plaats
+            </label>
+            <input
+              type="text"
+              value={city}
+              onChange={(e) => setCity(e.target.value)}
+              placeholder="Tilburg"
+              className="mt-1 w-full rounded-md border border-gray-300 px-3 py-2.5 text-sm text-vak-navy outline-none placeholder:text-gray-400"
+            />
+          </div>
+          <div>
+            <label className="text-sm font-semibold text-vak-navy">
+              Postcode
+            </label>
+            <input
+              type="text"
+              value={postalCode}
+              onChange={(e) => setPostalCode(e.target.value)}
+              placeholder="5041 AB"
+              className="mt-1 w-full rounded-md border border-gray-300 px-3 py-2.5 text-sm text-vak-navy outline-none placeholder:text-gray-400"
+            />
+          </div>
+        </div>
+
         <div>
           <label className="text-sm font-semibold text-vak-navy">
             Bedrijfsomschrijving
@@ -167,6 +212,12 @@ export function ProfileEditForm({
             />
           </div>
         </div>
+
+        <p className="rounded-md bg-gray-50 px-4 py-3 text-xs text-gray-500">
+          De werkstraal wordt pas echt gebruikt om klussen te filteren zodra
+          we adres-naar-coördinaten omzetting (geocoding) hebben toegevoegd —
+          dat is nog niet gebouwd. Plaats/postcode worden al wel opgeslagen.
+        </p>
 
         <div className="grid grid-cols-2 gap-4">
           <div>

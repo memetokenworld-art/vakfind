@@ -19,7 +19,7 @@ export default async function MyProfilePage() {
 
   const { data: profile } = await supabase
     .from("profiles")
-    .select("id, account_type, full_name")
+    .select("id, account_type, full_name, city, postal_code")
     .eq("id", user.id)
     .maybeSingle();
 
@@ -75,6 +75,8 @@ export default async function MyProfilePage() {
         <ProfileEditForm
           professionalId={pro.profile_id}
           initial={{
+            city: profile.city,
+            postalCode: profile.postal_code,
             bio: pro.bio,
             yearsOfExperience: pro.years_of_experience,
             hasOwnTools: pro.has_own_tools,
