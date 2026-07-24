@@ -9,6 +9,13 @@ export async function createClient() {
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
     {
+      // Next.js "łata" globalny fetch() w Server Components i domyślnie
+      // cache'uje odpowiedzi — bez tego dane z Supabase (status zlecenia,
+      // % kompletności profilu, VakScore...) potrafiłyby pokazywać starą
+      // wartość mimo router.refresh(). Wymuszamy zawsze świeże zapytanie.
+      global: {
+        fetch: (url, options) => fetch(url, { ...options, cache: "no-store" }),
+      },
       cookies: {
         getAll() {
           return cookieStore.getAll();
