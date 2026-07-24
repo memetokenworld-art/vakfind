@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import { LoginButton } from "@/components/LoginButton";
 
 // Nagłówek: tło granatowe, logo białe, link "Voor vakmensen" i przycisk
@@ -8,10 +9,10 @@ export function Header() {
     <header className="bg-vak-navy">
       <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
         <Link href="/" className="flex items-center gap-2">
-          {/* Tymczasowy placeholder na właściwe logo (mapa NL z młoteczkami) —
-              podmienić na plik graficzny, gdy dotrze. */}
-          <span className="flex h-8 w-8 items-center justify-center rounded bg-vak-gold text-[10px] font-bold text-vak-navy">
-            LOGO
+          {/* Wit tło pod logo — samo logo jest granatowe i ginie na
+              granatowym pasku nagłówka bez kontrastującego podłoża. */}
+          <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-white p-1">
+            <Image src="/logo.svg" alt="" width={24} height={24} priority />
           </span>
           <span className="text-xl font-extrabold text-white">VakFind</span>
         </Link>

@@ -1,0 +1,75 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 420 480" fill="none">
+  <!-- Uproszczony, stylizowany kontur Holandii: szeroka północ, wyraźnie
+       zwężający się "ogon" na południu (Limburg) — najbardziej rozpoznawalna
+       cecha kształtu kraju. -->
+
+  <!-- cień pod mapą -->
+  <path
+    d="M120 34 L226 24 L268 40 Q296 58 300 90
+       L310 150 Q316 178 300 200
+       L306 240 Q296 268 272 284
+       L250 330 Q236 366 216 398
+       L200 434 L182 402
+       Q160 360 150 320
+       L118 300 Q90 284 80 254
+       L66 226 Q58 198 68 172
+       L62 132 Q58 100 78 78
+       L96 52 Q104 40 120 34 Z"
+    fill="#08213a" opacity="0.3" transform="translate(8,10)" />
+
+  <!-- ląd -->
+  <path
+    d="M120 34 L226 24 L268 40 Q296 58 300 90
+       L310 150 Q316 178 300 200
+       L306 240 Q296 268 272 284
+       L250 330 Q236 366 216 398
+       L200 434 L182 402
+       Q160 360 150 320
+       L118 300 Q90 284 80 254
+       L66 226 Q58 198 68 172
+       L62 132 Q58 100 78 78
+       L96 52 Q104 40 120 34 Z"
+    fill="#0c2d4e" />
+
+  <!-- IJsselmeer: wcięcie w linii brzegowej -->
+  <path d="M150 90 Q180 108 178 148 Q150 138 140 108 Q142 96 150 90 Z" fill="#08213a" opacity="0.55" />
+
+  <!-- granice prowincji, cienkie białe linie -->
+  <g stroke="#ffffff" strokeOpacity="0.3" strokeWidth="2" fill="none">
+    <path d="M110 150 L170 190 L165 250" />
+    <path d="M165 250 L120 270" />
+    <path d="M165 250 L210 270 L215 330" />
+    <path d="M210 270 L268 258" />
+  </g>
+
+  <!-- łuk / swoosh w tle -->
+  <path d="M40 360 A 240 240 0 0 1 360 110" stroke="#8a97a6" strokeOpacity="0.55" strokeWidth="4" fill="none" />
+  <path d="M30 410 Q 200 452 370 390" stroke="#0c2d4e" strokeOpacity="0.55" strokeWidth="5" fill="none" />
+
+  <!-- pinezki z młotkiem -->
+  <g id="pins">
+    <!-- (cx, cy) = czubek pinezki; grupa rysowana wokół (0,-46) jako środek kółka -->
+    <g transform="translate(268,58)"><use href="#pin" /></g>
+    <g transform="translate(226,132)"><use href="#pin" /></g>
+    <g transform="translate(300,148)"><use href="#pin" /></g>
+    <g transform="translate(140,96)"><use href="#pin" /></g>
+    <g transform="translate(150,160)"><use href="#pin" /></g>
+    <g transform="translate(78,196)"><use href="#pin" /></g>
+    <g transform="translate(196,196)"><use href="#pin" /></g>
+    <g transform="translate(114,228)"><use href="#pin" /></g>
+    <g transform="translate(196,296)"><use href="#pin" /></g>
+    <g transform="translate(190,364)"><use href="#pin" /></g>
+  </g>
+
+  <defs>
+    <g id="pin">
+      <path
+        d="M0 46 C-18 24 -22 10 -22 -4 A22 22 0 1 1 22 -4 C22 10 18 24 0 46 Z"
+        fill="#f2a623" stroke="#0c2d4e" strokeWidth="2.5" />
+      <g transform="translate(0,-6) rotate(-40)">
+        <rect x="-2.5" y="-2" width="5" height="16" rx="1.5" fill="#0c2d4e" />
+        <rect x="-8" y="-9" width="16" height="8" rx="2" fill="#0c2d4e" />
+      </g>
+    </g>
+  </defs>
+</svg>
