@@ -52,10 +52,10 @@ export function SearchBar() {
   };
 
   return (
-    <div className="relative mx-auto w-full max-w-[520px]">
-      <div className="flex flex-col overflow-hidden rounded-2xl bg-white shadow-lg sm:flex-row sm:items-center sm:rounded-full">
-        <div className="flex flex-1 items-center gap-2 px-5 py-3.5">
-          <SearchIcon className="h-5 w-5 shrink-0 text-gray-400" />
+    <div className="relative mx-auto w-full max-w-[560px]">
+      <div className="flex flex-col items-stretch gap-3 sm:flex-row sm:items-center sm:justify-center">
+        <div className="flex items-center gap-2 border-b border-gray-200 px-1 py-2 sm:w-64 sm:border-b-0">
+          <SearchIcon className="h-4 w-4 shrink-0 text-gray-400" />
           <input
             type="text"
             value={query}
@@ -66,10 +66,8 @@ export function SearchBar() {
           />
         </div>
 
-        <div className="hidden h-8 w-px bg-gray-200 sm:block" />
-
-        <div className="flex items-center gap-2 border-t border-gray-100 px-5 py-3.5 sm:w-40 sm:border-t-0">
-          <PinIcon className="h-5 w-5 shrink-0 text-gray-400" />
+        <div className="flex items-center gap-2 border-b border-gray-200 px-1 py-2 sm:w-36 sm:border-b-0">
+          <PinIcon className="h-4 w-4 shrink-0 text-gray-400" />
           <input
             type="text"
             value={location}
@@ -81,14 +79,14 @@ export function SearchBar() {
 
         <button
           type="button"
-          className="m-1.5 shrink-0 rounded-full bg-vak-navy px-6 py-2.5 text-sm font-semibold text-vak-gold transition hover:bg-vak-navy-light"
+          className="shrink-0 rounded bg-vak-navy px-6 py-2 text-sm font-semibold text-vak-gold transition hover:bg-vak-navy-light"
         >
           Zoeken
         </button>
       </div>
 
       {open && (
-        <div className="absolute z-10 mt-2 w-full overflow-hidden rounded-2xl bg-white shadow-xl">
+        <div className="absolute z-10 mt-2 w-full overflow-hidden rounded-lg border border-gray-100 bg-white shadow-lg">
           {loading && (
             <div className="px-5 py-3 text-sm text-gray-500">Zoeken…</div>
           )}

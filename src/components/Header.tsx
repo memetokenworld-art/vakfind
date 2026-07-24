@@ -7,8 +7,13 @@ export function Header() {
   return (
     <header className="bg-vak-navy">
       <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
-        <Link href="/" className="text-2xl font-extrabold text-white">
-          VakFind
+        <Link href="/" className="flex items-center gap-2">
+          {/* Tymczasowy placeholder na właściwe logo (mapa NL z młoteczkami) —
+              podmienić na plik graficzny, gdy dotrze. */}
+          <span className="flex h-8 w-8 items-center justify-center rounded bg-vak-gold text-[10px] font-bold text-vak-navy">
+            LOGO
+          </span>
+          <span className="text-xl font-extrabold text-white">VakFind</span>
         </Link>
 
         <div className="flex items-center gap-6">

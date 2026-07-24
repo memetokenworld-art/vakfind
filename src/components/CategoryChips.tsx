@@ -15,7 +15,7 @@ export function CategoryChips({ categories }: { categories: Category[] }) {
   const [activeSlug, setActiveSlug] = useState<string | null>(null);
 
   return (
-    <div className="mx-auto flex max-w-4xl flex-wrap justify-center gap-2 px-6 py-6">
+    <div className="mx-auto flex max-w-4xl flex-wrap justify-center gap-1.5 px-6 py-5">
       {categories.map((c) => {
         const active = c.slug === activeSlug;
         return (
@@ -25,8 +25,8 @@ export function CategoryChips({ categories }: { categories: Category[] }) {
             onClick={() => setActiveSlug(active ? null : c.slug)}
             className={
               active
-                ? "rounded-full bg-vak-navy px-4 py-2 text-sm font-medium text-vak-gold"
-                : "rounded-full border border-gray-200 bg-gray-50 px-4 py-2 text-sm font-medium text-vak-navy hover:border-vak-gold"
+                ? "rounded px-3.5 py-1.5 text-sm font-semibold bg-vak-navy text-vak-gold"
+                : "rounded px-3.5 py-1.5 text-sm font-medium text-gray-500 hover:text-vak-navy"
             }
           >
             {c.name}

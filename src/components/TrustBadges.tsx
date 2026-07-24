@@ -10,11 +10,11 @@ const badges = [
 // bezpośrednia odpowiedź na skargi na Werkspot (pkt 11/14 specyfikacji).
 export function TrustBadges() {
   return (
-    <div className="mx-auto flex max-w-3xl flex-col items-center gap-4 px-6 py-10 sm:flex-row sm:justify-center sm:gap-10">
+    <div className="mx-auto flex max-w-2xl flex-col items-center gap-3 px-6 py-6 sm:flex-row sm:justify-center sm:gap-8">
       {badges.map(({ icon: Icon, label }) => (
-        <div key={label} className="flex items-center gap-2 text-vak-navy">
-          <Icon className="h-5 w-5 shrink-0" />
-          <span className="text-sm font-medium">{label}</span>
+        <div key={label} className="flex items-center gap-1.5 text-vak-navy">
+          <Icon className="h-4 w-4 shrink-0" />
+          <span className="text-xs font-medium">{label}</span>
         </div>
       ))}
     </div>
