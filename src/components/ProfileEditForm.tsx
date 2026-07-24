@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import type { ReactNode } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { FullWidthCtaButton } from "@/components/FullWidthCta";
@@ -27,12 +28,53 @@ type Props = {
   vakScore: number;
 };
 
-// Edycja profilu fachowca (ekran 8 — "Uzupełnij profil"). Uproszczone
-// względem mockupu: jeden formularz zamiast osobnych przycisków "Dodaj"
-// per pole — zdjęcia/certyfikaty na razie pominięte (wymagają Supabase
-// Storage, którego jeszcze nie skonfigurowaliśmy). Pasek postępu i
-// VakScore przeliczają się same w bazie po zapisie (triggery z KROKU 3/8
-// migracji), więc odświeżamy stronę po sukcesie, żeby pokazać nową wartość.
+// Rząd checklisty (ekran 8): zielone tło + haczyk gdy element jest
+// uzupełniony, bursztynowe + przerywane kółko gdy brakuje — dokładnie wg
+// ustaleń o mechanizmie liczenia % kompletności (deterministyczne "czy
+// pole jest wypełnione: tak/nie", bez oceny jakości treści).
+function ChecklistItem({
+  done,
+  label,
+  children,
+}: {
+  done: boolean;
+  label: string;
+  children: ReactNode;
+}) {
+  return (
+    <div
+      className={`rounded-md px-4 py-3 ${
+        done ? "bg-vak-success-bg" : "bg-vak-amber-bg"
+      }`}
+    >
+      <div className="flex items-center gap-2">
+        <span
+          className={`flex h-4 w-4 shrink-0 items-center justify-center rounded-full text-[10px] ${
+            done
+              ? "bg-vak-success-text text-white"
+              : "border border-dashed border-vak-amber-text"
+          }`}
+        >
+          {done ? "✓" : ""}
+        </span>
+        <span
+          className={`text-sm font-semibold ${
+            done ? "text-vak-success-text" : "text-vak-amber-text"
+          }`}
+        >
+          {label}
+        </span>
+      </div>
+      <div className="mt-2">{children}</div>
+    </div>
+  );
+}
+
+// Edycja profilu fachowca (ekran 8 — "Uzupełnij profil"). Checklista +
+// pola scalone w jedno: kolor rzędu przelicza się na żywo w przeglądarce
+// (dla natychmiastowej informacji zwrotnej), a prawdziwy % na pasku na
+// górze pochodzi z bazy (calculate_profile_completeness) i uaktualnia się
+// po zapisie — te dwa mechanizmy celowo używają tej samej logiki wag.
 export function ProfileEditForm({
   professionalId,
   initial,
@@ -134,13 +176,21 @@ export function ProfileEditForm({
       </div>
       <div className="mt-2 h-2 w-full rounded-full bg-gray-100">
         <div
-          className="h-2 rounded-full bg-vak-gold"
+          className="h-2 rounded-full bg-vak-gold transition-all"
           style={{ width: `${profileCompleteness}%` }}
         />
       </div>
       <p className="mt-2 text-xs text-gray-400">VakScore: {Math.round(vakScore)}</p>
+      <p className="mt-4 text-xs text-gray-500">
+        Hoe meer je aanvult, hoe hoger je VakScore — klanten kiezen vaker
+        profielen met een hoge score.
+      </p>
 
-      <div className="mt-8 space-y-5">
+      <div className="mt-6 space-y-3">
+        <div className="rounded-md bg-vak-success-bg px-4 py-3 text-sm font-semibold text-vak-success-text">
+          ✓ KvK-nummer, naam en e-mail — verplicht
+        </div>
+
         <div className="grid grid-cols-2 gap-4">
           <div>
             <label className="text-sm font-semibold text-vak-navy">
@@ -167,53 +217,79 @@ export function ProfileEditForm({
             />
           </div>
         </div>
-
-        <div>
-          <label className="text-sm font-semibold text-vak-navy">
-            Bedrijfsomschrijving
-          </label>
-          <textarea
-            value={bio}
-            onChange={(e) => setBio(e.target.value)}
-            rows={3}
-            placeholder="Vertel kort wie je bent en wat je doet."
-            className="mt-1 w-full rounded-md border border-gray-300 px-3 py-2.5 text-sm text-vak-navy outline-none placeholder:text-gray-400"
-          />
-        </div>
-
-        <div className="grid grid-cols-2 gap-4">
-          <div>
-            <label className="text-sm font-semibold text-vak-navy">
-              Jaren ervaring
-            </label>
-            <input
-              type="number"
-              min={0}
-              value={years}
-              onChange={(e) => setYears(e.target.value)}
-              className="mt-1 w-full rounded-md border border-gray-300 px-3 py-2.5 text-sm text-vak-navy outline-none"
-            />
-          </div>
-          <div>
-            <label className="text-sm font-semibold text-vak-navy">
-              Werkstraal (km)
-            </label>
-            <input
-              type="number"
-              min={1}
-              value={radius}
-              onChange={(e) => setRadius(e.target.value)}
-              className="mt-1 w-full rounded-md border border-gray-300 px-3 py-2.5 text-sm text-vak-navy outline-none"
-            />
-          </div>
-        </div>
-
         <p className="rounded-md bg-gray-50 px-4 py-3 text-xs text-gray-500">
           Plaats/postcode worden omgezet naar coördinaten (Google Geocoding)
           zodra je opslaat. Het filteren van opdrachten op deze werkstraal
           gebruikt die coördinaten nog niet overal — dat volgt in een
           volgende stap.
         </p>
+
+        <ChecklistItem done={bio.trim().length > 20} label="Bedrijfsomschrijving">
+          <textarea
+            value={bio}
+            onChange={(e) => setBio(e.target.value)}
+            rows={3}
+            placeholder="Vertel kort wie je bent en wat je doet (minimaal enkele zinnen)."
+            className="w-full rounded-md border border-gray-300 bg-white px-3 py-2.5 text-sm text-vak-navy outline-none placeholder:text-gray-400"
+          />
+        </ChecklistItem>
+
+        <ChecklistItem done={years.trim() !== ""} label="Jaren ervaring">
+          <input
+            type="number"
+            min={0}
+            value={years}
+            onChange={(e) => setYears(e.target.value)}
+            className="w-full rounded-md border border-gray-300 bg-white px-3 py-2.5 text-sm text-vak-navy outline-none"
+          />
+        </ChecklistItem>
+
+        <ChecklistItem done={hasOwnTools} label="Eigen gereedschap">
+          <label className="flex items-center gap-2 text-sm text-vak-navy">
+            <input
+              type="checkbox"
+              checked={hasOwnTools}
+              onChange={(e) => setHasOwnTools(e.target.checked)}
+            />
+            Ik heb mijn eigen gereedschap
+          </label>
+        </ChecklistItem>
+
+        <ChecklistItem done={readsDrawings} label="Technische tekeningen">
+          <label className="flex items-center gap-2 text-sm text-vak-navy">
+            <input
+              type="checkbox"
+              checked={readsDrawings}
+              onChange={(e) => setReadsDrawings(e.target.checked)}
+            />
+            Ik kan technische tekeningen lezen
+          </label>
+        </ChecklistItem>
+
+        <ChecklistItem done={false} label="Certificaten (bijv. VCA)">
+          <p className="text-xs text-vak-amber-text">
+            Toevoegen komt binnenkort beschikbaar.
+          </p>
+        </ChecklistItem>
+
+        <ChecklistItem done={false} label="Foto's van je werk (0/3)">
+          <p className="text-xs text-vak-amber-text">
+            Toevoegen komt binnenkort beschikbaar.
+          </p>
+        </ChecklistItem>
+
+        <div>
+          <label className="text-sm font-semibold text-vak-navy">
+            Werkstraal (km)
+          </label>
+          <input
+            type="number"
+            min={1}
+            value={radius}
+            onChange={(e) => setRadius(e.target.value)}
+            className="mt-1 w-full rounded-md border border-gray-300 px-3 py-2.5 text-sm text-vak-navy outline-none"
+          />
+        </div>
 
         <div className="grid grid-cols-2 gap-4">
           <div>
@@ -242,25 +318,6 @@ export function ProfileEditForm({
           </div>
         </div>
 
-        <div className="flex gap-6">
-          <label className="flex items-center gap-2 text-sm text-vak-navy">
-            <input
-              type="checkbox"
-              checked={hasOwnTools}
-              onChange={(e) => setHasOwnTools(e.target.checked)}
-            />
-            Eigen gereedschap
-          </label>
-          <label className="flex items-center gap-2 text-sm text-vak-navy">
-            <input
-              type="checkbox"
-              checked={readsDrawings}
-              onChange={(e) => setReadsDrawings(e.target.checked)}
-            />
-            Leest technische tekeningen
-          </label>
-        </div>
-
         <div>
           <label className="text-sm font-semibold text-vak-navy">
             Diensten
@@ -285,11 +342,6 @@ export function ProfileEditForm({
             })}
           </div>
         </div>
-
-        <p className="rounded-md bg-gray-50 px-4 py-3 text-xs text-gray-500">
-          Foto&apos;s van je werk en certificaten toevoegen komt binnenkort
-          beschikbaar.
-        </p>
 
         {error && <p className="text-sm text-red-500">{error}</p>}
       </div>
