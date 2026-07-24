@@ -70,9 +70,17 @@ type ProfessionalProfileRow = {
   kvk_number: string;
   kvk_company_name: string | null;
   kvk_verification_status: "unverified" | "pending" | "verified" | "rejected";
+  kvk_verified_at: string | null;
   bio: string | null;
   years_of_experience: number | null;
+  has_own_tools: boolean;
+  tools_description: string | null;
+  reads_technical_drawings: boolean;
+  team_size: number | null;
   service_radius_km: number;
+  hourly_rate_min: number | null;
+  hourly_rate_max: number | null;
+  has_liability_insurance: boolean;
   vak_score: number;
   review_avg_rating: number;
   review_count: number;
@@ -88,7 +96,11 @@ type ProfessionalProfileInsert = {
   kvk_number: string;
   bio?: string | null;
   years_of_experience?: number | null;
+  has_own_tools?: boolean;
+  reads_technical_drawings?: boolean;
   service_radius_km?: number;
+  hourly_rate_min?: number | null;
+  hourly_rate_max?: number | null;
 };
 
 type OrderRow = {

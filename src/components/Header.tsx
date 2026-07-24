@@ -1,10 +1,29 @@
 import Link from "next/link";
 import Image from "next/image";
 import { LoginButton } from "@/components/LoginButton";
+import { LogoutButton } from "@/components/LogoutButton";
+import { createClient } from "@/lib/supabase/server";
 
-// Nagłówek: tło granatowe, logo białe, link "Voor vakmensen" i przycisk
-// logowania złote — dokładnie wg zatwierdzonego mockupu (ekran 1).
-export function Header() {
+// Nagłówek: tło granatowe, logo białe — dokładnie wg zatwierdzonego
+// mockupu (ekran 1). Świadomie zamieniony na async server component,
+// żeby pokazywać właściwe linki nawigacji zależnie od tego, czy ktoś
+// jest zalogowany i jaką ma rolę (klient / fachowiec).
+export async function Header() {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  let accountType: "client" | "professional" | null = null;
+  if (user) {
+    const { data: profile } = await supabase
+      .from("profiles")
+      .select("account_type")
+      .eq("id", user.id)
+      .maybeSingle();
+    accountType = profile?.account_type ?? null;
+  }
+
   return (
     <header className="bg-vak-navy">
       <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
@@ -18,13 +37,43 @@ export function Header() {
         </Link>
 
         <div className="flex items-center gap-6">
-          <Link
-            href="/voor-vakmensen"
-            className="hidden text-sm font-medium text-vak-gold hover:text-vak-gold-light sm:block"
-          >
-            Voor vakmensen
-          </Link>
-          <LoginButton />
+          {!user && (
+            <Link
+              href="/voor-vakmensen"
+              className="hidden text-sm font-medium text-vak-gold hover:text-vak-gold-light sm:block"
+            >
+              Voor vakmensen
+            </Link>
+          )}
+
+          {accountType === "client" && (
+            <Link
+              href="/zlecenie/nieuw"
+              className="hidden text-sm font-medium text-vak-gold hover:text-vak-gold-light sm:block"
+            >
+              Nieuwe klus
+            </Link>
+          )}
+
+          {accountType === "professional" && (
+            <Link
+              href="/opdrachten"
+              className="hidden text-sm font-medium text-vak-gold hover:text-vak-gold-light sm:block"
+            >
+              Opdrachten
+            </Link>
+          )}
+
+          {user && (
+            <Link
+              href="/profiel"
+              className="hidden text-sm font-medium text-vak-gold hover:text-vak-gold-light sm:block"
+            >
+              Mijn profiel
+            </Link>
+          )}
+
+          {user ? <LogoutButton /> : <LoginButton />}
         </div>
       </div>
     </header>
