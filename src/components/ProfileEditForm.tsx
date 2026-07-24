@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { FullWidthCtaButton } from "@/components/FullWidthCta";
+import { updateProfileLocation } from "@/app/profiel/actions";
 
 type Category = { id: string; name: string };
 
@@ -72,16 +73,10 @@ export function ProfileEditForm({
     setSubmitting(true);
     setError(null);
 
-    const { error: locationError } = await supabase
-      .from("profiles")
-      .update({
-        city: city.trim() || null,
-        postal_code: postalCode.trim() || null,
-      })
-      .eq("id", professionalId);
-
-    if (locationError) {
-      setError(locationError.message);
+    try {
+      await updateProfileLocation(city, postalCode);
+    } catch (e) {
+      setError(e instanceof Error ? e.message : "Locatie opslaan mislukt.");
       setSubmitting(false);
       return;
     }
@@ -214,9 +209,10 @@ export function ProfileEditForm({
         </div>
 
         <p className="rounded-md bg-gray-50 px-4 py-3 text-xs text-gray-500">
-          De werkstraal wordt pas echt gebruikt om klussen te filteren zodra
-          we adres-naar-coördinaten omzetting (geocoding) hebben toegevoegd —
-          dat is nog niet gebouwd. Plaats/postcode worden al wel opgeslagen.
+          Plaats/postcode worden omgezet naar coördinaten (Google Geocoding)
+          zodra je opslaat. Het filteren van opdrachten op deze werkstraal
+          gebruikt die coördinaten nog niet overal — dat volgt in een
+          volgende stap.
         </p>
 
         <div className="grid grid-cols-2 gap-4">

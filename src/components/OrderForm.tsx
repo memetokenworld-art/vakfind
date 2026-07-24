@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { FullWidthCtaButton } from "@/components/FullWidthCta";
+import { createOrder } from "@/app/zlecenie/nieuw/actions";
 
 type Category = { id: string; name: string };
 
@@ -39,30 +40,16 @@ export function OrderForm({ categories }: { categories: Category[] }) {
       return;
     }
 
-    const title =
-      description.trim().length > 60
-        ? `${description.trim().slice(0, 60)}…`
-        : description.trim();
-
-    const { data: order, error: insertError } = await supabase
-      .from("orders")
-      .insert({
-        client_id: user.id,
-        category_id: categoryId,
-        title,
-        description: description.trim(),
-        city: location.trim(),
-        // Postcode wordt nog niet apart ingevuld in dit formulier — tijdelijk
-        // dezelfde waarde als locatie, tot er een echt adresveld met
-        // geocoding is (specificatie, punt 12).
-        postal_code: location.trim(),
-        preferred_date: preferredDate || null,
-      })
-      .select("id")
-      .single();
-
-    if (insertError || !order) {
-      setError(insertError?.message ?? "Er ging iets mis.");
+    let order;
+    try {
+      order = await createOrder({
+        categoryId,
+        description,
+        location,
+        preferredDate: preferredDate || null,
+      });
+    } catch (e) {
+      setError(e instanceof Error ? e.message : "Er ging iets mis.");
       setSubmitting(false);
       return;
     }

@@ -115,6 +115,8 @@ type OrderRow = {
   city: string;
   postal_code: string;
   full_address: string | null;
+  latitude: number | null;
+  longitude: number | null;
   preferred_date: string | null;
   assigned_professional_id: string | null;
   in_progress_started_at: string | null;
@@ -134,16 +136,14 @@ type OrderInsert = {
   city: string;
   postal_code: string;
   full_address?: string | null;
+  latitude?: number | null;
+  longitude?: number | null;
   budget_min?: number | null;
   budget_max?: number | null;
   preferred_date?: string | null;
 };
 
-type OrdersPublicRow = Omit<OrderRow, "full_address"> & {
-  latitude: number | null;
-  longitude: number | null;
-  full_address: string | null;
-};
+type OrdersPublicRow = OrderRow;
 
 type SearchCategoriesReturn = {
   id: string;
