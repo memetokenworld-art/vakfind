@@ -72,6 +72,7 @@ type ProfessionalProfileRow = {
   kvk_verification_status: "unverified" | "pending" | "verified" | "rejected";
   bio: string | null;
   years_of_experience: number | null;
+  service_radius_km: number;
   vak_score: number;
   review_avg_rating: number;
   review_count: number;
@@ -87,6 +88,7 @@ type ProfessionalProfileInsert = {
   kvk_number: string;
   bio?: string | null;
   years_of_experience?: number | null;
+  service_radius_km?: number;
 };
 
 type OrderRow = {
@@ -136,6 +138,58 @@ type SearchCategoriesReturn = {
   match_score: number;
 }[];
 
+type ProfileContactRow = {
+  profile_id: string;
+  phone: string | null;
+  email: string;
+  street_address: string | null;
+  updated_at: string;
+};
+
+type ProfileContactInsert = {
+  profile_id: string;
+  phone?: string | null;
+  email: string;
+  street_address?: string | null;
+};
+
+type ProfessionalCategoryRow = {
+  professional_id: string;
+  category_id: string;
+  created_at: string;
+};
+
+type ProfessionalCategoryInsert = {
+  professional_id: string;
+  category_id: string;
+};
+
+type PortfolioPhotoRow = {
+  id: string;
+  professional_id: string;
+  photo_url: string;
+  caption: string | null;
+  moderation_status: "pending" | "approved" | "rejected";
+  reported_count: number;
+  created_at: string;
+};
+
+type PortfolioPhotoInsert = {
+  id?: string;
+  professional_id: string;
+  photo_url: string;
+  caption?: string | null;
+};
+
+type UnlockProfessionalContactRow = {
+  id: string;
+  client_id: string;
+  professional_id: string;
+  price: number;
+  wallet_transaction_id: string | null;
+  unlocked_at: string;
+};
+
 export type Database = {
   public: {
     Tables: {
@@ -177,6 +231,24 @@ export type Database = {
         Update: Partial<OrderRow>;
         Relationships: [];
       };
+      profile_contacts: {
+        Row: ProfileContactRow;
+        Insert: ProfileContactInsert;
+        Update: Partial<ProfileContactInsert>;
+        Relationships: [];
+      };
+      professional_categories: {
+        Row: ProfessionalCategoryRow;
+        Insert: ProfessionalCategoryInsert;
+        Update: Partial<ProfessionalCategoryInsert>;
+        Relationships: [];
+      };
+      professional_portfolio_photos: {
+        Row: PortfolioPhotoRow;
+        Insert: PortfolioPhotoInsert;
+        Update: Partial<PortfolioPhotoInsert>;
+        Relationships: [];
+      };
     };
     Views: {
       orders_public: {
@@ -188,6 +260,10 @@ export type Database = {
       search_categories: {
         Args: { query: string };
         Returns: SearchCategoriesReturn;
+      };
+      unlock_professional_contact: {
+        Args: { p_professional_id: string };
+        Returns: UnlockProfessionalContactRow;
       };
     };
     Enums: Record<string, never>;
