@@ -105,6 +105,9 @@ type OrderRow = {
   full_address: string | null;
   preferred_date: string | null;
   assigned_professional_id: string | null;
+  in_progress_started_at: string | null;
+  in_progress_expires_at: string | null;
+  closed_reason: "no_client_response" | "client_cancelled" | "other" | null;
   created_at: string;
   updated_at: string;
   completed_at: string | null;
@@ -181,6 +184,22 @@ type PortfolioPhotoInsert = {
   caption?: string | null;
 };
 
+type OrderContactUnlockRow = {
+  id: string;
+  order_id: string;
+  professional_id: string;
+  price: number;
+  wallet_transaction_id: string | null;
+  unlocked_at: string;
+  refunded_at: string | null;
+  refund_wallet_transaction_id: string | null;
+};
+
+type OrderContactUnlockInsert = {
+  order_id: string;
+  professional_id: string;
+};
+
 type UnlockProfessionalContactRow = {
   id: string;
   client_id: string;
@@ -188,6 +207,17 @@ type UnlockProfessionalContactRow = {
   price: number;
   wallet_transaction_id: string | null;
   unlocked_at: string;
+};
+
+type UnlockOrderContactRow = {
+  id: string;
+  order_id: string;
+  professional_id: string;
+  price: number;
+  wallet_transaction_id: string | null;
+  unlocked_at: string;
+  refunded_at: string | null;
+  refund_wallet_transaction_id: string | null;
 };
 
 export type Database = {
@@ -249,6 +279,12 @@ export type Database = {
         Update: Partial<PortfolioPhotoInsert>;
         Relationships: [];
       };
+      order_contact_unlocks: {
+        Row: OrderContactUnlockRow;
+        Insert: OrderContactUnlockInsert;
+        Update: Partial<OrderContactUnlockInsert>;
+        Relationships: [];
+      };
     };
     Views: {
       orders_public: {
@@ -264,6 +300,18 @@ export type Database = {
       unlock_professional_contact: {
         Args: { p_professional_id: string };
         Returns: UnlockProfessionalContactRow;
+      };
+      unlock_order_contact: {
+        Args: { p_order_id: string };
+        Returns: UnlockOrderContactRow;
+      };
+      complete_order: {
+        Args: { p_order_id: string };
+        Returns: OrderRow;
+      };
+      reopen_order: {
+        Args: { p_order_id: string };
+        Returns: OrderRow;
       };
     };
     Enums: Record<string, never>;

@@ -9,8 +9,23 @@ export async function GET(request: Request) {
 
   if (code) {
     const supabase = await createClient();
-    const { error } = await supabase.auth.exchangeCodeForSession(code);
-    if (!error) {
+    const { data, error } = await supabase.auth.exchangeCodeForSession(code);
+
+    if (!error && data.user) {
+      // Pierwsze logowanie? Nie ma jeszcze wiersza w profiles (klient czy
+      // fachowiec) — dokończ profil, zanim przejdziesz dalej.
+      const { data: profile } = await supabase
+        .from("profiles")
+        .select("id")
+        .eq("id", data.user.id)
+        .maybeSingle();
+
+      if (!profile) {
+        return NextResponse.redirect(
+          `${origin}/profiel/nieuw?next=${encodeURIComponent(next)}`
+        );
+      }
+
       return NextResponse.redirect(`${origin}${next}`);
     }
   }
