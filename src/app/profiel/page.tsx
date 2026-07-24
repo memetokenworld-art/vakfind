@@ -68,6 +68,19 @@ export default async function MyProfilePage() {
     .select("category_id")
     .eq("professional_id", user.id);
 
+  const { data: photos } = await supabase
+    .from("professional_portfolio_photos")
+    .select("id, photo_url")
+    .eq("professional_id", user.id)
+    .eq("moderation_status", "approved")
+    .order("created_at", { ascending: true });
+
+  const { data: certificates } = await supabase
+    .from("professional_certificates")
+    .select("id, name, file_url")
+    .eq("professional_id", user.id)
+    .order("created_at", { ascending: true });
+
   return (
     <div className="min-h-screen bg-white">
       <Header />
@@ -87,6 +100,8 @@ export default async function MyProfilePage() {
           }}
           allCategories={allCategories ?? []}
           selectedCategoryIds={(myCategories ?? []).map((c) => c.category_id)}
+          photos={photos ?? []}
+          certificates={certificates ?? []}
           profileCompleteness={pro.profile_completeness}
           vakScore={pro.vak_score}
         />

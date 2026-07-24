@@ -6,8 +6,12 @@ import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { FullWidthCtaButton } from "@/components/FullWidthCta";
 import { updateProfileLocation } from "@/app/profiel/actions";
+import { PhotoUploader } from "@/components/PhotoUploader";
+import { CertificateUploader } from "@/components/CertificateUploader";
 
 type Category = { id: string; name: string };
+type Photo = { id: string; photo_url: string };
+type Certificate = { id: string; name: string; file_url: string | null };
 
 type Props = {
   professionalId: string;
@@ -24,6 +28,8 @@ type Props = {
   };
   allCategories: Category[];
   selectedCategoryIds: string[];
+  photos: Photo[];
+  certificates: Certificate[];
   profileCompleteness: number;
   vakScore: number;
 };
@@ -80,6 +86,8 @@ export function ProfileEditForm({
   initial,
   allCategories,
   selectedCategoryIds,
+  photos,
+  certificates,
   profileCompleteness,
   vakScore,
 }: Props) {
@@ -266,16 +274,18 @@ export function ProfileEditForm({
           </label>
         </ChecklistItem>
 
-        <ChecklistItem done={false} label="Certificaten (bijv. VCA)">
-          <p className="text-xs text-vak-amber-text">
-            Toevoegen komt binnenkort beschikbaar.
-          </p>
+        <ChecklistItem done={certificates.length > 0} label="Certificaten (bijv. VCA)">
+          <CertificateUploader
+            professionalId={professionalId}
+            initialCertificates={certificates}
+          />
         </ChecklistItem>
 
-        <ChecklistItem done={false} label="Foto's van je werk (0/3)">
-          <p className="text-xs text-vak-amber-text">
-            Toevoegen komt binnenkort beschikbaar.
-          </p>
+        <ChecklistItem
+          done={photos.length > 0}
+          label={`Foto's van je werk (${photos.length})`}
+        >
+          <PhotoUploader professionalId={professionalId} initialPhotos={photos} />
         </ChecklistItem>
 
         <div>

@@ -194,6 +194,25 @@ type PortfolioPhotoInsert = {
   professional_id: string;
   photo_url: string;
   caption?: string | null;
+  moderation_status?: "pending" | "approved" | "rejected";
+};
+
+type CertificateRow = {
+  id: string;
+  professional_id: string;
+  name: string;
+  issued_by: string | null;
+  file_url: string | null;
+  verified: boolean;
+  created_at: string;
+};
+
+type CertificateInsert = {
+  id?: string;
+  professional_id: string;
+  name: string;
+  issued_by?: string | null;
+  file_url?: string | null;
 };
 
 type OrderContactUnlockRow = {
@@ -289,6 +308,12 @@ export type Database = {
         Row: PortfolioPhotoRow;
         Insert: PortfolioPhotoInsert;
         Update: Partial<PortfolioPhotoInsert>;
+        Relationships: [];
+      };
+      professional_certificates: {
+        Row: CertificateRow;
+        Insert: CertificateInsert;
+        Update: Partial<CertificateInsert>;
         Relationships: [];
       };
       order_contact_unlocks: {
