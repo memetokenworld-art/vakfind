@@ -3,7 +3,18 @@
 import { useEffect, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 
-type Contact = { phone: string | null; email: string };
+type Contact = {
+  phone: string | null;
+  whatsapp_number: string | null;
+  website_url: string | null;
+  facebook_url: string | null;
+  instagram_url: string | null;
+  linkedin_url: string | null;
+  email: string;
+};
+
+const CONTACT_COLUMNS =
+  "phone, whatsapp_number, website_url, facebook_url, instagram_url, linkedin_url, email";
 
 // "Odblokuj kontakt · 1€" (ekran 2) — RLS na profile_contacts (KROK 10
 // migracji) sam decyduje, czy dany użytkownik już ma dostęp do numeru/maila
@@ -36,7 +47,7 @@ export function UnlockContactButton({
 
       const { data } = await supabase
         .from("profile_contacts")
-        .select("phone, email")
+        .select(CONTACT_COLUMNS)
         .eq("profile_id", professionalId)
         .maybeSingle();
 
@@ -82,7 +93,7 @@ export function UnlockContactButton({
 
     const { data } = await supabase
       .from("profile_contacts")
-      .select("phone, email")
+      .select(CONTACT_COLUMNS)
       .eq("profile_id", professionalId)
       .maybeSingle();
 
@@ -104,10 +115,34 @@ export function UnlockContactButton({
   }
 
   if (status === "unlocked" && contact) {
+    const socialLinks = [
+      contact.website_url && { label: "Website", href: contact.website_url },
+      contact.facebook_url && { label: "Facebook", href: contact.facebook_url },
+      contact.instagram_url && { label: "Instagram", href: contact.instagram_url },
+      contact.linkedin_url && { label: "LinkedIn", href: contact.linkedin_url },
+    ].filter(Boolean) as { label: string; href: string }[];
+
     return (
-      <div className="w-full bg-vak-success-bg px-6 py-3.5 text-center text-sm font-semibold text-vak-success-text">
-        {contact.phone ? `${contact.phone} · ` : ""}
-        {contact.email}
+      <div className="w-full space-y-1.5 bg-vak-success-bg px-6 py-3.5 text-center text-sm font-semibold text-vak-success-text">
+        <div>
+          {contact.email}
+          {contact.phone ? ` · ${contact.phone}` : ""}
+          {contact.whatsapp_number ? ` · WhatsApp: ${contact.whatsapp_number}` : ""}
+        </div>
+        {socialLinks.length > 0 && (
+          <div className="flex flex-wrap justify-center gap-x-3 text-xs font-normal underline">
+            {socialLinks.map((link) => (
+              <a
+                key={link.label}
+                href={link.href}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                {link.label}
+              </a>
+            ))}
+          </div>
+        )}
       </div>
     );
   }

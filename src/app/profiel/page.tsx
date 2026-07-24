@@ -81,6 +81,12 @@ export default async function MyProfilePage() {
     .eq("professional_id", user.id)
     .order("created_at", { ascending: true });
 
+  const { data: contact } = await supabase
+    .from("profile_contacts")
+    .select("phone, whatsapp_number, website_url, facebook_url, instagram_url, linkedin_url")
+    .eq("profile_id", user.id)
+    .maybeSingle();
+
   return (
     <div className="min-h-screen bg-white">
       <Header />
@@ -90,6 +96,8 @@ export default async function MyProfilePage() {
           initial={{
             city: profile.city,
             postalCode: profile.postal_code,
+            phone: contact?.phone ?? null,
+            whatsappNumber: contact?.whatsapp_number ?? null,
             bio: pro.bio,
             yearsOfExperience: pro.years_of_experience,
             hasOwnTools: pro.has_own_tools,
@@ -97,6 +105,10 @@ export default async function MyProfilePage() {
             serviceRadiusKm: pro.service_radius_km,
             hourlyRateMin: pro.hourly_rate_min,
             hourlyRateMax: pro.hourly_rate_max,
+            websiteUrl: contact?.website_url ?? null,
+            facebookUrl: contact?.facebook_url ?? null,
+            instagramUrl: contact?.instagram_url ?? null,
+            linkedinUrl: contact?.linkedin_url ?? null,
           }}
           allCategories={allCategories ?? []}
           selectedCategoryIds={(myCategories ?? []).map((c) => c.category_id)}

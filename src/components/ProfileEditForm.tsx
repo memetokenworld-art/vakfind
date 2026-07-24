@@ -18,6 +18,8 @@ type Props = {
   initial: {
     city: string | null;
     postalCode: string | null;
+    phone: string | null;
+    whatsappNumber: string | null;
     bio: string | null;
     yearsOfExperience: number | null;
     hasOwnTools: boolean;
@@ -25,6 +27,10 @@ type Props = {
     serviceRadiusKm: number;
     hourlyRateMin: number | null;
     hourlyRateMax: number | null;
+    websiteUrl: string | null;
+    facebookUrl: string | null;
+    instagramUrl: string | null;
+    linkedinUrl: string | null;
   };
   allCategories: Category[];
   selectedCategoryIds: string[];
@@ -93,6 +99,12 @@ export function ProfileEditForm({
 }: Props) {
   const [city, setCity] = useState(initial.city ?? "");
   const [postalCode, setPostalCode] = useState(initial.postalCode ?? "");
+  const [phone, setPhone] = useState(initial.phone ?? "");
+  const [whatsappNumber, setWhatsappNumber] = useState(initial.whatsappNumber ?? "");
+  const [websiteUrl, setWebsiteUrl] = useState(initial.websiteUrl ?? "");
+  const [facebookUrl, setFacebookUrl] = useState(initial.facebookUrl ?? "");
+  const [instagramUrl, setInstagramUrl] = useState(initial.instagramUrl ?? "");
+  const [linkedinUrl, setLinkedinUrl] = useState(initial.linkedinUrl ?? "");
   const [bio, setBio] = useState(initial.bio ?? "");
   const [years, setYears] = useState(initial.yearsOfExperience?.toString() ?? "");
   const [hasOwnTools, setHasOwnTools] = useState(initial.hasOwnTools);
@@ -127,6 +139,28 @@ export function ProfileEditForm({
       await updateProfileLocation(city, postalCode);
     } catch (e) {
       setError(e instanceof Error ? e.message : "Locatie opslaan mislukt.");
+      setSubmitting(false);
+      return;
+    }
+
+    // Telefoon/WhatsApp/website/social media gaan ALLEMAAL naar
+    // profile_contacts — hetzelfde beschermde record als e-mail. Bewust
+    // NIET publiek: een website of Facebook-link zou het betaalmodel
+    // omzeilen (klant vindt daar alsnog gratis een telefoonnummer).
+    const { error: contactError } = await supabase
+      .from("profile_contacts")
+      .update({
+        phone: phone.trim() || null,
+        whatsapp_number: whatsappNumber.trim() || null,
+        website_url: websiteUrl.trim() || null,
+        facebook_url: facebookUrl.trim() || null,
+        instagram_url: instagramUrl.trim() || null,
+        linkedin_url: linkedinUrl.trim() || null,
+      })
+      .eq("profile_id", professionalId);
+
+    if (contactError) {
+      setError(contactError.message);
       setSubmitting(false);
       return;
     }
@@ -230,6 +264,95 @@ export function ProfileEditForm({
           zodra je opslaat. Het filteren van opdrachten op deze werkstraal
           gebruikt die coördinaten nog niet overal — dat volgt in een
           volgende stap.
+        </p>
+
+        <div className="grid grid-cols-2 gap-4">
+          <div>
+            <label className="text-sm font-semibold text-vak-navy">
+              Telefoon
+            </label>
+            <input
+              type="tel"
+              value={phone}
+              onChange={(e) => setPhone(e.target.value)}
+              placeholder="+31 6 12345678"
+              className="mt-1 w-full rounded-md border border-gray-300 px-3 py-2.5 text-sm text-vak-navy outline-none placeholder:text-gray-400"
+            />
+          </div>
+          <div>
+            <label className="text-sm font-semibold text-vak-navy">
+              WhatsApp
+            </label>
+            <input
+              type="tel"
+              value={whatsappNumber}
+              onChange={(e) => setWhatsappNumber(e.target.value)}
+              placeholder="+31 6 12345678"
+              className="mt-1 w-full rounded-md border border-gray-300 px-3 py-2.5 text-sm text-vak-navy outline-none placeholder:text-gray-400"
+            />
+          </div>
+        </div>
+        <p className="rounded-md bg-gray-50 px-4 py-3 text-xs text-gray-500">
+          Telefoon en WhatsApp zijn net als e-mail pas zichtbaar voor een
+          klant nadat die het contact heeft ontgrendeld (1€).
+        </p>
+
+        <div>
+          <label className="text-sm font-semibold text-vak-navy">
+            Website
+          </label>
+          <input
+            type="url"
+            value={websiteUrl}
+            onChange={(e) => setWebsiteUrl(e.target.value)}
+            placeholder="https://jouwbedrijf.nl"
+            className="mt-1 w-full rounded-md border border-gray-300 px-3 py-2.5 text-sm text-vak-navy outline-none placeholder:text-gray-400"
+          />
+        </div>
+
+        <div className="grid grid-cols-3 gap-4">
+          <div>
+            <label className="text-sm font-semibold text-vak-navy">
+              Facebook
+            </label>
+            <input
+              type="url"
+              value={facebookUrl}
+              onChange={(e) => setFacebookUrl(e.target.value)}
+              placeholder="facebook.com/…"
+              className="mt-1 w-full rounded-md border border-gray-300 px-3 py-2.5 text-sm text-vak-navy outline-none placeholder:text-gray-400"
+            />
+          </div>
+          <div>
+            <label className="text-sm font-semibold text-vak-navy">
+              Instagram
+            </label>
+            <input
+              type="url"
+              value={instagramUrl}
+              onChange={(e) => setInstagramUrl(e.target.value)}
+              placeholder="instagram.com/…"
+              className="mt-1 w-full rounded-md border border-gray-300 px-3 py-2.5 text-sm text-vak-navy outline-none placeholder:text-gray-400"
+            />
+          </div>
+          <div>
+            <label className="text-sm font-semibold text-vak-navy">
+              LinkedIn
+            </label>
+            <input
+              type="url"
+              value={linkedinUrl}
+              onChange={(e) => setLinkedinUrl(e.target.value)}
+              placeholder="linkedin.com/…"
+              className="mt-1 w-full rounded-md border border-gray-300 px-3 py-2.5 text-sm text-vak-navy outline-none placeholder:text-gray-400"
+            />
+          </div>
+        </div>
+        <p className="rounded-md bg-gray-50 px-4 py-3 text-xs text-gray-500">
+          Website en social media zijn — net als telefoon en e-mail — pas
+          zichtbaar na betaald ontgrendelen. Zo blijft VakFind de enige weg
+          om contact te leggen, ook al zou een klant je bedrijfsnaam elders
+          kunnen vinden.
         </p>
 
         <ChecklistItem done={bio.trim().length > 20} label="Bedrijfsomschrijving">

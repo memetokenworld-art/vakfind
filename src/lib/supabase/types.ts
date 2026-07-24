@@ -156,6 +156,11 @@ type SearchCategoriesReturn = {
 type ProfileContactRow = {
   profile_id: string;
   phone: string | null;
+  whatsapp_number: string | null;
+  website_url: string | null;
+  facebook_url: string | null;
+  instagram_url: string | null;
+  linkedin_url: string | null;
   email: string;
   street_address: string | null;
   updated_at: string;
@@ -164,6 +169,11 @@ type ProfileContactRow = {
 type ProfileContactInsert = {
   profile_id: string;
   phone?: string | null;
+  whatsapp_number?: string | null;
+  website_url?: string | null;
+  facebook_url?: string | null;
+  instagram_url?: string | null;
+  linkedin_url?: string | null;
   email: string;
   street_address?: string | null;
 };
