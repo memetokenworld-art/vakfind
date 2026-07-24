@@ -161,7 +161,15 @@ export type Database = {
         Row: ProfessionalProfileRow;
         Insert: ProfessionalProfileInsert;
         Update: Partial<ProfessionalProfileRow>;
-        Relationships: [];
+        Relationships: [
+          {
+            foreignKeyName: "professional_profiles_profile_id_fkey";
+            columns: ["profile_id"];
+            isOneToOne: true;
+            referencedRelation: "profiles";
+            referencedColumns: ["id"];
+          },
+        ];
       };
       orders: {
         Row: OrderRow;

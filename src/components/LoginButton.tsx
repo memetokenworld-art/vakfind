@@ -19,9 +19,9 @@ export function LoginButton() {
   return (
     <button
       onClick={handleLogin}
-      className="rounded-full bg-vak-navy px-5 py-2 text-sm font-semibold text-white transition hover:bg-vak-navy-light"
+      className="rounded-full bg-vak-gold px-5 py-2 text-sm font-semibold text-vak-navy transition hover:bg-vak-gold-light"
     >
-      Inloggen met Google
+      Inloggen
     </button>
   );
 }

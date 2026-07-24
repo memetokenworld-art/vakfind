@@ -4,11 +4,17 @@
   --background: #ffffff;
   --foreground: #171717;
 
-  /* Kolory marki VakFind (zatwierdzone w dokumentach) */
+  /* Kolory marki VakFind — paleta z pakietu "dla Claude Code" */
   --color-vak-navy: #0c2d4e;
   --color-vak-navy-light: #163f6c;
   --color-vak-gold: #f2a623;
   --color-vak-gold-light: #f7c35f;
+  --color-vak-success-bg: #e1f5ee;
+  --color-vak-success-text: #085041;
+  --color-vak-amber-bg: #faeeda;
+  --color-vak-amber-text: #633806;
+  --color-vak-blue-alt-bg: #e6f1fb;
+  --color-vak-blue-alt-text: #185fa5;
 }
 
 @theme inline {
@@ -18,6 +24,12 @@
   --color-vak-navy-light: var(--color-vak-navy-light);
   --color-vak-gold: var(--color-vak-gold);
   --color-vak-gold-light: var(--color-vak-gold-light);
+  --color-vak-success-bg: var(--color-vak-success-bg);
+  --color-vak-success-text: var(--color-vak-success-text);
+  --color-vak-amber-bg: var(--color-vak-amber-bg);
+  --color-vak-amber-text: var(--color-vak-amber-text);
+  --color-vak-blue-alt-bg: var(--color-vak-blue-alt-bg);
+  --color-vak-blue-alt-text: var(--color-vak-blue-alt-text);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 }
