@@ -55,7 +55,14 @@ export function OrderUnlockButton({ orderId }: { orderId: string }) {
         {status === "loading" ? "Bezig…" : "Contact ontgrendelen · 5€"}
       </button>
       {status === "error" && errorMessage && (
-        <p className="mt-1 max-w-[200px] text-xs text-red-500">{errorMessage}</p>
+        <div className="mt-1 max-w-[200px]">
+          <p className="text-xs text-red-500">{errorMessage}</p>
+          {errorMessage.includes("Niewystarczające środki") && (
+            <a href="/portfel" className="text-xs font-semibold text-vak-navy underline">
+              Portfel opwaarderen →
+            </a>
+          )}
+        </div>
       )}
     </div>
   );

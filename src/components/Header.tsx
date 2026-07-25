@@ -15,6 +15,7 @@ export async function Header() {
   } = await supabase.auth.getUser();
 
   let accountType: "client" | "professional" | null = null;
+  let walletBalance: number | null = null;
   if (user) {
     const { data: profile } = await supabase
       .from("profiles")
@@ -22,6 +23,13 @@ export async function Header() {
       .eq("id", user.id)
       .maybeSingle();
     accountType = profile?.account_type ?? null;
+
+    const { data: wallet } = await supabase
+      .from("wallets")
+      .select("balance")
+      .eq("profile_id", user.id)
+      .maybeSingle();
+    walletBalance = wallet?.balance ?? null;
   }
 
   return (
@@ -61,6 +69,15 @@ export async function Header() {
               className="hidden text-sm font-medium text-vak-gold hover:text-vak-gold-light sm:block"
             >
               Opdrachten
+            </Link>
+          )}
+
+          {user && (
+            <Link
+              href="/portfel"
+              className="hidden items-center gap-1 rounded border border-vak-gold/40 px-2.5 py-1 text-sm font-semibold text-vak-gold hover:bg-vak-navy-light sm:flex"
+            >
+              €{Number(walletBalance ?? 0).toFixed(2)}
             </Link>
           )}
 

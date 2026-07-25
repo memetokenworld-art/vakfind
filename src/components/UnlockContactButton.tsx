@@ -170,7 +170,14 @@ export function UnlockContactButton({
         {status === "loading" ? "Bezig…" : "🔒 Contact ontgrendelen · 1€"}
       </button>
       {status === "error" && errorMessage && (
-        <p className="mt-2 text-center text-xs text-red-500">{errorMessage}</p>
+        <div className="mt-2 text-center">
+          <p className="text-xs text-red-500">{errorMessage}</p>
+          {errorMessage.includes("Niewystarczające środki") && (
+            <a href="/portfel" className="text-xs font-semibold text-vak-navy underline">
+              Portfel opwaarderen →
+            </a>
+          )}
+        </div>
       )}
     </div>
   );

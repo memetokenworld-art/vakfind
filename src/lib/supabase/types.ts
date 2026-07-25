@@ -225,6 +225,48 @@ type CertificateInsert = {
   file_url?: string | null;
 };
 
+type WalletRow = {
+  profile_id: string;
+  balance: number;
+  updated_at: string;
+};
+
+type PaymentRow = {
+  id: string;
+  profile_id: string;
+  amount: number;
+  currency: string;
+  provider: string;
+  provider_payment_id: string | null;
+  status: "pending" | "paid" | "failed" | "refunded";
+  purpose: "wallet_topup" | "contact_unlock_direct" | "b2b_unlock" | "b2b_subscription";
+  wallet_transaction_id: string | null;
+  created_at: string;
+  updated_at: string;
+};
+
+type PaymentInsert = {
+  id?: string;
+  profile_id: string;
+  amount: number;
+  currency?: string;
+  provider?: string;
+  provider_payment_id?: string | null;
+  status?: "pending" | "paid" | "failed" | "refunded";
+  purpose: "wallet_topup" | "contact_unlock_direct" | "b2b_unlock" | "b2b_subscription";
+};
+
+type WalletTransactionRow = {
+  id: string;
+  profile_id: string;
+  amount: number;
+  type: "topup" | "contact_unlock" | "refund" | "bonus" | "adjustment";
+  reference_table: string | null;
+  reference_id: string | null;
+  description: string | null;
+  created_at: string;
+};
+
 type OrderContactUnlockRow = {
   id: string;
   order_id: string;
@@ -332,6 +374,24 @@ export type Database = {
         Update: Partial<OrderContactUnlockInsert>;
         Relationships: [];
       };
+      wallets: {
+        Row: WalletRow;
+        Insert: never;
+        Update: never;
+        Relationships: [];
+      };
+      payments: {
+        Row: PaymentRow;
+        Insert: PaymentInsert;
+        Update: Partial<PaymentInsert>;
+        Relationships: [];
+      };
+      wallet_transactions: {
+        Row: WalletTransactionRow;
+        Insert: never;
+        Update: never;
+        Relationships: [];
+      };
     };
     Views: {
       orders_public: {
@@ -359,6 +419,10 @@ export type Database = {
       reopen_order: {
         Args: { p_order_id: string };
         Returns: OrderRow;
+      };
+      confirm_payment: {
+        Args: { p_payment_id: string };
+        Returns: PaymentRow;
       };
     };
     Enums: Record<string, never>;
