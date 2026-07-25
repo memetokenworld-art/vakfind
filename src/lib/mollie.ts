@@ -39,6 +39,10 @@ export async function createMolliePayment(input: {
       amount: { currency: "EUR", value: input.amountEur.toFixed(2) },
       description: input.description,
       redirectUrl: input.redirectUrl,
+      // Zonder dit raadt Mollie de taal van de checkoutpagina op basis van
+      // de browser van de bezoeker — VakFind is een NL-only platform, dus
+      // altijd Nederlands, ongeacht wat iemands browser toevallig instelt.
+      locale: "nl_NL",
       // Mollie accepteert geen webhookUrl op localhost (niet publiek
       // bereikbaar) — dan slaan we hem gewoon over, de gebruiker ziet de
       // betaalstatus na terugkeer via redirectUrl (zie /portfel/verwerken).
