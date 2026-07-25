@@ -311,6 +311,46 @@ type WalletTransactionRow = {
   created_at: string;
 };
 
+type ConversationRow = {
+  id: string;
+  client_id: string;
+  professional_id: string;
+  order_id: string | null;
+  last_message_at: string | null;
+  created_at: string;
+};
+
+type ConversationInsert = {
+  id?: string;
+  client_id: string;
+  professional_id: string;
+  order_id?: string | null;
+};
+
+type MessageRow = {
+  id: string;
+  conversation_id: string;
+  sender_id: string;
+  body: string;
+  created_at: string;
+};
+
+type MessageInsert = {
+  id?: string;
+  conversation_id: string;
+  sender_id: string;
+  body: string;
+};
+
+type ProfessionalContactUnlockRow = {
+  id: string;
+  client_id: string;
+  professional_id: string;
+  price: number;
+  wallet_transaction_id: string | null;
+  unlocked_at: string;
+};
+
 type OrderContactUnlockRow = {
   id: string;
   order_id: string;
@@ -418,6 +458,12 @@ export type Database = {
         Update: Partial<OrderContactUnlockInsert>;
         Relationships: [];
       };
+      professional_contact_unlocks: {
+        Row: ProfessionalContactUnlockRow;
+        Insert: never;
+        Update: never;
+        Relationships: [];
+      };
       wallets: {
         Row: WalletRow;
         Insert: never;
@@ -452,6 +498,18 @@ export type Database = {
         Row: PortfolioExtensionOrderRow;
         Insert: PortfolioExtensionOrderInsert;
         Update: Partial<PortfolioExtensionOrderInsert>;
+        Relationships: [];
+      };
+      conversations: {
+        Row: ConversationRow;
+        Insert: ConversationInsert;
+        Update: Partial<ConversationInsert>;
+        Relationships: [];
+      };
+      messages: {
+        Row: MessageRow;
+        Insert: MessageInsert;
+        Update: Partial<MessageInsert>;
         Relationships: [];
       };
     };

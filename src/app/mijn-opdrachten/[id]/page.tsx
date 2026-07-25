@@ -4,6 +4,7 @@ import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { StatusBadge } from "@/components/StatusBadge";
 import { OrderStatusActions } from "@/components/OrderStatusActions";
+import { MessageButton } from "@/components/MessageButton";
 
 function daysAgo(dateString: string) {
   const ms = Date.now() - new Date(dateString).getTime();
@@ -60,11 +61,19 @@ export default async function OrderStatusPage({
         {order.status === "in_progress" &&
           order.assigned_professional_id &&
           order.in_progress_started_at && (
-            <OrderStatusActions
-              orderId={order.id}
-              professionalName={professionalName ?? "Een vakman"}
-              unlockedDaysAgo={daysAgo(order.in_progress_started_at)}
-            />
+            <>
+              <OrderStatusActions
+                orderId={order.id}
+                professionalName={professionalName ?? "Een vakman"}
+                unlockedDaysAgo={daysAgo(order.in_progress_started_at)}
+              />
+              <div className="mt-4">
+                <MessageButton
+                  otherPartyId={order.assigned_professional_id}
+                  orderId={order.id}
+                />
+              </div>
+            </>
           )}
 
         {order.status === "completed" && (

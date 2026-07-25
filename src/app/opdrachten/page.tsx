@@ -3,6 +3,7 @@ import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { StatusBadge } from "@/components/StatusBadge";
 import { OrderUnlockButton } from "@/components/OrderUnlockButton";
+import { MessageButton } from "@/components/MessageButton";
 
 function daysAgo(dateString: string) {
   const ms = Date.now() - new Date(dateString).getTime();
@@ -24,7 +25,7 @@ export default async function AvailableOrdersPage() {
   const { data: orders } = await supabase
     .from("orders")
     .select(
-      "id, title, description, city, status, created_at, assigned_professional_id"
+      "id, title, description, city, status, created_at, assigned_professional_id, client_id"
     )
     .in("status", ["active", "in_progress"])
     .order("created_at", { ascending: false })
@@ -96,9 +97,12 @@ export default async function AvailableOrdersPage() {
 
                   <div className="mt-3 flex justify-end">
                     {isMine ? (
-                      <span className="text-sm font-medium text-vak-success-text">
-                        Door jou ontgrendeld
-                      </span>
+                      <div className="flex items-center gap-3">
+                        <span className="text-sm font-medium text-vak-success-text">
+                          Door jou ontgrendeld
+                        </span>
+                        <MessageButton otherPartyId={order.client_id} orderId={order.id} />
+                      </div>
                     ) : isTaken ? (
                       <span className="text-sm font-medium text-gray-400">
                         Niet beschikbaar

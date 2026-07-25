@@ -3,6 +3,7 @@ import { createClient } from "@/lib/supabase/server";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { UnlockContactButton } from "@/components/UnlockContactButton";
+import { MessageButton } from "@/components/MessageButton";
 
 function initials(name: string) {
   return name
@@ -69,6 +70,21 @@ export default async function ProfessionalProfilePage({
 
   const memberSince = new Date(pro.created_at).getFullYear();
   const fullName = owner?.full_name ?? "Onbekende vakman";
+
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  let isUnlocked = false;
+  if (user) {
+    const { data: unlock } = await supabase
+      .from("professional_contact_unlocks")
+      .select("id")
+      .eq("client_id", user.id)
+      .eq("professional_id", id)
+      .maybeSingle();
+    isUnlocked = Boolean(unlock);
+  }
 
   return (
     <div className="min-h-screen bg-white">
@@ -192,8 +208,9 @@ export default async function ProfessionalProfilePage({
           </div>
         )}
 
-        <div className="mt-8">
+        <div className="mt-8 space-y-3">
           <UnlockContactButton professionalId={pro.profile_id} />
+          {isUnlocked && <MessageButton otherPartyId={pro.profile_id} />}
         </div>
       </div>
 

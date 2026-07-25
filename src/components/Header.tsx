@@ -83,6 +83,15 @@ export async function Header() {
 
           {user && (
             <Link
+              href="/berichten"
+              className="hidden text-sm font-medium text-vak-gold hover:text-vak-gold-light sm:block"
+            >
+              Berichten
+            </Link>
+          )}
+
+          {user && (
+            <Link
               href="/profiel"
               className="hidden text-sm font-medium text-vak-gold hover:text-vak-gold-light sm:block"
             >
