@@ -28,7 +28,7 @@ export default async function ProfessionalProfilePage({
   const { data: pro } = await supabase
     .from("professional_profiles")
     .select(
-      "profile_id, bio, vak_score, review_avg_rating, review_count, completed_orders_count, service_radius_km, created_at"
+      "profile_id, bio, vak_score, review_avg_rating, review_count, completed_orders_count, service_radius_km, created_at, custom_profession"
     )
     .eq("profile_id", id)
     .maybeSingle();
@@ -157,11 +157,11 @@ export default async function ProfessionalProfilePage({
           </p>
         </div>
 
-        {categories && categories.length > 0 && (
+        {((categories && categories.length > 0) || pro.custom_profession) && (
           <div className="mt-8 border-t border-gray-100 pt-6">
             <h2 className="text-sm font-semibold text-vak-navy">Diensten</h2>
             <div className="mt-3 flex flex-wrap gap-2">
-              {categories.map((c) => (
+              {(categories ?? []).map((c) => (
                 <span
                   key={c.id}
                   className="rounded bg-gray-50 px-3 py-1.5 text-sm text-vak-navy"
@@ -169,6 +169,11 @@ export default async function ProfessionalProfilePage({
                   {c.name}
                 </span>
               ))}
+              {pro.custom_profession && (
+                <span className="rounded bg-gray-50 px-3 py-1.5 text-sm text-vak-navy">
+                  {pro.custom_profession}
+                </span>
+              )}
             </div>
           </div>
         )}

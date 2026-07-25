@@ -39,6 +39,7 @@ type Props = {
     facebookUrl: string | null;
     instagramUrl: string | null;
     linkedinUrl: string | null;
+    customProfession: string | null;
   };
   allCategories: Category[];
   selectedCategoryIds: string[];
@@ -130,6 +131,7 @@ export function ProfileEditForm({
   const [radius, setRadius] = useState(initial.serviceRadiusKm.toString());
   const [rateMin, setRateMin] = useState(initial.hourlyRateMin?.toString() ?? "");
   const [rateMax, setRateMax] = useState(initial.hourlyRateMax?.toString() ?? "");
+  const [customProfession, setCustomProfession] = useState(initial.customProfession ?? "");
   const [selectedCategories, setSelectedCategories] = useState<Set<string>>(
     new Set(selectedCategoryIds)
   );
@@ -191,6 +193,7 @@ export function ProfileEditForm({
         service_radius_km: radius ? Number(radius) : 10,
         hourly_rate_min: rateMin ? Number(rateMin) : null,
         hourly_rate_max: rateMax ? Number(rateMax) : null,
+        custom_profession: customProfession.trim() || null,
       })
       .eq("profile_id", professionalId);
 
@@ -528,6 +531,23 @@ export function ProfileEditForm({
               );
             })}
           </div>
+        </div>
+
+        <div>
+          <label className="text-sm font-semibold text-vak-navy">
+            Ander vak? Beschrijf het zelf (&ldquo;Inne&rdquo;)
+          </label>
+          <input
+            type="text"
+            value={customProfession}
+            onChange={(e) => setCustomProfession(e.target.value)}
+            placeholder="bijv. systeemplafond monteur"
+            className="mt-1 w-full rounded-md border border-gray-300 px-3 py-2.5 text-sm text-vak-navy outline-none placeholder:text-gray-400"
+          />
+          <p className="mt-1 text-xs text-gray-500">
+            Staat niet in de lijst hierboven? Meteen zichtbaar op je profiel
+            en meteen doorzoekbaar — zonder wachten op goedkeuring.
+          </p>
         </div>
 
         {error && <p className="text-sm text-red-500">{error}</p>}

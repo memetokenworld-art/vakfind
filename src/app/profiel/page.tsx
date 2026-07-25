@@ -47,7 +47,7 @@ export default async function MyProfilePage() {
   const { data: pro } = await supabase
     .from("professional_profiles")
     .select(
-      "profile_id, bio, years_of_experience, has_own_tools, reads_technical_drawings, service_radius_km, hourly_rate_min, hourly_rate_max, profile_completeness, vak_score"
+      "profile_id, bio, years_of_experience, has_own_tools, reads_technical_drawings, service_radius_km, hourly_rate_min, hourly_rate_max, custom_profession, profile_completeness, vak_score"
     )
     .eq("profile_id", user.id)
     .maybeSingle();
@@ -128,6 +128,7 @@ export default async function MyProfilePage() {
             facebookUrl: contact?.facebook_url ?? null,
             instagramUrl: contact?.instagram_url ?? null,
             linkedinUrl: contact?.linkedin_url ?? null,
+            customProfession: pro.custom_profession,
           }}
           allCategories={allCategories ?? []}
           selectedCategoryIds={(myCategories ?? []).map((c) => c.category_id)}

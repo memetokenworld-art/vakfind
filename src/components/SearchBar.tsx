@@ -11,6 +11,13 @@ type CategoryMatch = {
   match_score: number;
 };
 
+type ProfessionMatch = {
+  professional_id: string;
+  full_name: string;
+  custom_profession: string;
+  match_score: number;
+};
+
 // Wyszukiwarka po synonimach (specyfikacja, pkt 16): klient wpisuje dowolną
 // frazę, nie musi znać oficjalnej nazwy zawodu. Woła bezpośrednio funkcję
 // search_categories() w bazie. Pole lokalizacji na razie czysto wizualne —
@@ -20,6 +27,7 @@ export function SearchBar() {
   const [query, setQuery] = useState("");
   const [location, setLocation] = useState("");
   const [results, setResults] = useState<CategoryMatch[]>([]);
+  const [professionResults, setProfessionResults] = useState<ProfessionMatch[]>([]);
   const [loading, setLoading] = useState(false);
   const [open, setOpen] = useState(false);
   const supabase = createClient();
@@ -29,14 +37,18 @@ export function SearchBar() {
 
     const timeout = setTimeout(async () => {
       setLoading(true);
-      const { data, error } = await supabase.rpc("search_categories", {
-        query: query.trim(),
-      });
+      const [categories, professions] = await Promise.all([
+        supabase.rpc("search_categories", { query: query.trim() }),
+        supabase.rpc("search_custom_professions", { query: query.trim() }),
+      ]);
       setLoading(false);
-      if (!error && data) {
-        setResults(data as CategoryMatch[]);
-        setOpen(true);
+      if (!categories.error && categories.data) {
+        setResults(categories.data as CategoryMatch[]);
       }
+      if (!professions.error && professions.data) {
+        setProfessionResults(professions.data as ProfessionMatch[]);
+      }
+      setOpen(true);
     }, 300);
 
     return () => clearTimeout(timeout);
@@ -47,6 +59,7 @@ export function SearchBar() {
     setQuery(value);
     if (value.trim().length < 2) {
       setResults([]);
+      setProfessionResults([]);
       setOpen(false);
     }
   };
@@ -90,9 +103,9 @@ export function SearchBar() {
           {loading && (
             <div className="px-5 py-3 text-sm text-gray-500">Zoeken…</div>
           )}
-          {!loading && results.length === 0 && (
+          {!loading && results.length === 0 && professionResults.length === 0 && (
             <div className="px-5 py-3 text-sm text-gray-500">
-              Geen categorie gevonden voor &ldquo;{query}&rdquo;.
+              Geen resultaat gevonden voor &ldquo;{query}&rdquo;.
             </div>
           )}
           {!loading &&
@@ -103,6 +116,19 @@ export function SearchBar() {
                 className="block px-5 py-3 text-sm text-vak-navy hover:bg-vak-gold/10"
               >
                 {r.name}
+              </a>
+            ))}
+          {!loading &&
+            professionResults.map((r) => (
+              <a
+                key={r.professional_id}
+                href={`/fachowiec/${r.professional_id}`}
+                className="block px-5 py-3 text-sm text-vak-navy hover:bg-vak-gold/10"
+              >
+                {r.full_name}
+                <span className="block text-xs text-gray-400">
+                  &ldquo;{r.custom_profession}&rdquo;
+                </span>
               </a>
             ))}
         </div>

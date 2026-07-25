@@ -38,7 +38,8 @@ insert into public.categories (name, name_pl, slug, parent_id) values
   ('Schilder', 'Malarz', 'schilder', (select id from public.categories where slug = 'afwerking-interieur')),
   ('Vloerlegger', 'Fachowiec od podłóg', 'vloerlegger', (select id from public.categories where slug = 'afwerking-interieur')),
   ('Behanger', 'Tapeciarz', 'behanger', (select id from public.categories where slug = 'afwerking-interieur')),
-  ('Meubelmontage', 'Montaż mebli', 'meubelmontage', (select id from public.categories where slug = 'afwerking-interieur'));
+  ('Meubelmontage', 'Montaż mebli', 'meubelmontage', (select id from public.categories where slug = 'afwerking-interieur')),
+  ('Systeemplafonds', 'Sufity podwieszane/systemowe', 'systeemplafonds', (select id from public.categories where slug = 'afwerking-interieur'));
 
 -- --- Ogród i zewnętrze ---
 insert into public.categories (name, name_pl, slug, parent_id) values
@@ -111,6 +112,11 @@ join (values
   ('meubelmontage', 'meubelmontage', 'nl'), ('meubelmontage', 'meubels monteren', 'nl'), ('meubelmontage', 'ikea montage', 'nl'),
   ('meubelmontage', 'kast in elkaar zetten', 'nl'), ('meubelmontage', 'bed opbouwen', 'nl'), ('meubelmontage', 'meubels in elkaar zetten', 'nl'),
   ('meubelmontage', 'furniture assembly', 'en'), ('meubelmontage', 'ikea assembly', 'en'),
+
+  ('systeemplafonds', 'systeemplafond', 'nl'), ('systeemplafonds', 'verlaagd plafond', 'nl'),
+  ('systeemplafonds', 'plafondmontage', 'nl'), ('systeemplafonds', 'plafondplaten', 'nl'),
+  ('systeemplafonds', 'plafondprofielen', 'nl'), ('systeemplafonds', 'akoestisch plafond', 'nl'),
+  ('systeemplafonds', 'zwevend plafond', 'nl'),
 
   ('hovenier', 'hovenier', 'nl'), ('hovenier', 'tuinman', 'nl'), ('hovenier', 'tuinonderhoud', 'nl'),
   ('hovenier', 'gras maaien', 'nl'), ('hovenier', 'heg snoeien', 'nl'), ('hovenier', 'tuin aanleggen', 'nl'), ('hovenier', 'bomen snoeien', 'nl'),

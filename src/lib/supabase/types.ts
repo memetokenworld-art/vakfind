@@ -81,6 +81,7 @@ type ProfessionalProfileRow = {
   hourly_rate_min: number | null;
   hourly_rate_max: number | null;
   has_liability_insurance: boolean;
+  custom_profession: string | null;
   vak_score: number;
   review_avg_rating: number;
   review_count: number;
@@ -101,6 +102,7 @@ type ProfessionalProfileInsert = {
   service_radius_km?: number;
   hourly_rate_min?: number | null;
   hourly_rate_max?: number | null;
+  custom_profession?: string | null;
 };
 
 type OrderRow = {
@@ -150,6 +152,13 @@ type SearchCategoriesReturn = {
   name: string;
   slug: string;
   parent_id: string | null;
+  match_score: number;
+}[];
+
+type SearchCustomProfessionsReturn = {
+  professional_id: string;
+  full_name: string;
+  custom_profession: string;
   match_score: number;
 }[];
 
@@ -523,6 +532,10 @@ export type Database = {
       search_categories: {
         Args: { query: string };
         Returns: SearchCategoriesReturn;
+      };
+      search_custom_professions: {
+        Args: { query: string };
+        Returns: SearchCustomProfessionsReturn;
       };
       unlock_professional_contact: {
         Args: { p_professional_id: string };
