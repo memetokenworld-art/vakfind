@@ -128,19 +128,30 @@ export async function finalizePortfolioExtensionPurchase(orderId: string) {
     return { status: "paid" as const };
   }
 
+  if (order.status === "failed") {
+    return { status: "failed" as const };
+  }
+
   if (!order.provider_payment_id) {
     return { status: "pending" as const };
   }
 
   const molliePayment = await getMolliePayment(order.provider_payment_id);
+  const service = createServiceClient();
 
   if (molliePayment.status === "paid") {
-    const service = createServiceClient();
     const { error } = await service.rpc("confirm_portfolio_extension_order", {
       p_order_id: order.id,
     });
     if (error) throw new Error(error.message);
     return { status: "paid" as const };
+  }
+
+  if (["failed", "canceled", "expired"].includes(molliePayment.status)) {
+    const { error } = await service.rpc("mark_portfolio_extension_order_failed", {
+      p_order_id: order.id,
+    });
+    if (error) throw new Error(error.message);
   }
 
   return { status: molliePayment.status };

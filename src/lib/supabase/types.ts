@@ -561,6 +561,14 @@ export type Database = {
         Args: { p_order_id: string };
         Returns: PortfolioExtensionRow;
       };
+      mark_payment_failed: {
+        Args: { p_payment_id: string };
+        Returns: PaymentRow;
+      };
+      mark_portfolio_extension_order_failed: {
+        Args: { p_order_id: string };
+        Returns: PortfolioExtensionOrderRow;
+      };
     };
     Enums: Record<string, never>;
     CompositeTypes: Record<string, never>;

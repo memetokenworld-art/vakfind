@@ -88,19 +88,30 @@ export async function finalizeWalletTopUp(localPaymentId: string) {
     return { status: "paid" as const };
   }
 
+  if (payment.status === "failed") {
+    return { status: "failed" as const };
+  }
+
   if (!payment.provider_payment_id) {
     return { status: "pending" as const };
   }
 
   const molliePayment = await getMolliePayment(payment.provider_payment_id);
+  const service = createServiceClient();
 
   if (molliePayment.status === "paid") {
-    const service = createServiceClient();
     const { error } = await service.rpc("confirm_payment", {
       p_payment_id: payment.id,
     });
     if (error) throw new Error(error.message);
     return { status: "paid" as const };
+  }
+
+  if (["failed", "canceled", "expired"].includes(molliePayment.status)) {
+    const { error } = await service.rpc("mark_payment_failed", {
+      p_payment_id: payment.id,
+    });
+    if (error) throw new Error(error.message);
   }
 
   return { status: molliePayment.status };
