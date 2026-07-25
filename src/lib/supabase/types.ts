@@ -207,6 +207,50 @@ type PortfolioPhotoInsert = {
   moderation_status?: "pending" | "approved" | "rejected";
 };
 
+type PortfolioVideoRow = {
+  id: string;
+  professional_id: string;
+  video_url: string;
+  caption: string | null;
+  duration_seconds: number | null;
+  moderation_status: "pending" | "approved" | "rejected";
+  reported_count: number;
+  created_at: string;
+};
+
+type PortfolioVideoInsert = {
+  id?: string;
+  professional_id: string;
+  video_url: string;
+  caption?: string | null;
+  duration_seconds?: number | null;
+  moderation_status?: "pending" | "approved" | "rejected";
+};
+
+type PortfolioExtensionRow = {
+  professional_id: string;
+  active: boolean;
+  expires_at: string | null;
+  updated_at: string;
+};
+
+type PortfolioExtensionOrderRow = {
+  id: string;
+  professional_id: string;
+  price: number;
+  provider_payment_id: string | null;
+  status: "pending" | "paid" | "failed";
+  created_at: string;
+};
+
+type PortfolioExtensionOrderInsert = {
+  id?: string;
+  professional_id: string;
+  price?: number;
+  provider_payment_id?: string | null;
+  status?: "pending" | "paid" | "failed";
+};
+
 type CertificateRow = {
   id: string;
   professional_id: string;
@@ -392,6 +436,24 @@ export type Database = {
         Update: never;
         Relationships: [];
       };
+      professional_portfolio_videos: {
+        Row: PortfolioVideoRow;
+        Insert: PortfolioVideoInsert;
+        Update: Partial<PortfolioVideoInsert>;
+        Relationships: [];
+      };
+      portfolio_extensions: {
+        Row: PortfolioExtensionRow;
+        Insert: never;
+        Update: never;
+        Relationships: [];
+      };
+      portfolio_extension_orders: {
+        Row: PortfolioExtensionOrderRow;
+        Insert: PortfolioExtensionOrderInsert;
+        Update: Partial<PortfolioExtensionOrderInsert>;
+        Relationships: [];
+      };
     };
     Views: {
       orders_public: {
@@ -423,6 +485,10 @@ export type Database = {
       confirm_payment: {
         Args: { p_payment_id: string };
         Returns: PaymentRow;
+      };
+      confirm_portfolio_extension_order: {
+        Args: { p_order_id: string };
+        Returns: PortfolioExtensionRow;
       };
     };
     Enums: Record<string, never>;

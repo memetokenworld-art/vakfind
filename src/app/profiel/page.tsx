@@ -75,11 +75,30 @@ export default async function MyProfilePage() {
     .eq("moderation_status", "approved")
     .order("created_at", { ascending: true });
 
+  const { data: videos } = await supabase
+    .from("professional_portfolio_videos")
+    .select("id, video_url")
+    .eq("professional_id", user.id)
+    .eq("moderation_status", "approved")
+    .order("created_at", { ascending: true });
+
   const { data: certificates } = await supabase
     .from("professional_certificates")
     .select("id, name, file_url")
     .eq("professional_id", user.id)
     .order("created_at", { ascending: true });
+
+  const { data: portfolioExtension } = await supabase
+    .from("portfolio_extensions")
+    .select("active, expires_at")
+    .eq("professional_id", user.id)
+    .maybeSingle();
+
+  const portfolioExtended = Boolean(
+    portfolioExtension?.active &&
+      portfolioExtension.expires_at &&
+      new Date(portfolioExtension.expires_at) > new Date()
+  );
 
   const { data: contact } = await supabase
     .from("profile_contacts")
@@ -113,9 +132,12 @@ export default async function MyProfilePage() {
           allCategories={allCategories ?? []}
           selectedCategoryIds={(myCategories ?? []).map((c) => c.category_id)}
           photos={photos ?? []}
+          videos={videos ?? []}
           certificates={certificates ?? []}
           profileCompleteness={pro.profile_completeness}
           vakScore={pro.vak_score}
+          portfolioExtended={portfolioExtended}
+          portfolioExtensionExpiresAt={portfolioExtension?.expires_at ?? null}
         />
       </div>
       <Footer />

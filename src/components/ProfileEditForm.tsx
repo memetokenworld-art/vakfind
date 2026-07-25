@@ -7,11 +7,19 @@ import { createClient } from "@/lib/supabase/client";
 import { FullWidthCtaButton } from "@/components/FullWidthCta";
 import { updateProfileLocation } from "@/app/profiel/actions";
 import { PhotoUploader } from "@/components/PhotoUploader";
+import { VideoUploader } from "@/components/VideoUploader";
 import { CertificateUploader } from "@/components/CertificateUploader";
+import { PortfolioExtensionButton } from "@/components/PortfolioExtensionButton";
 
 type Category = { id: string; name: string };
 type Photo = { id: string; photo_url: string };
+type Video = { id: string; video_url: string };
 type Certificate = { id: string; name: string; file_url: string | null };
+
+const FREE_PHOTO_LIMIT = 10;
+const EXTENDED_PHOTO_LIMIT = 30;
+const FREE_VIDEO_LIMIT = 3;
+const EXTENDED_VIDEO_LIMIT = 10;
 
 type Props = {
   professionalId: string;
@@ -35,9 +43,12 @@ type Props = {
   allCategories: Category[];
   selectedCategoryIds: string[];
   photos: Photo[];
+  videos: Video[];
   certificates: Certificate[];
   profileCompleteness: number;
   vakScore: number;
+  portfolioExtended: boolean;
+  portfolioExtensionExpiresAt: string | null;
 };
 
 // Rząd checklisty (ekran 8): zielone tło + haczyk gdy element jest
@@ -93,10 +104,15 @@ export function ProfileEditForm({
   allCategories,
   selectedCategoryIds,
   photos,
+  videos,
   certificates,
   profileCompleteness,
   vakScore,
+  portfolioExtended,
+  portfolioExtensionExpiresAt,
 }: Props) {
+  const photoLimit = portfolioExtended ? EXTENDED_PHOTO_LIMIT : FREE_PHOTO_LIMIT;
+  const videoLimit = portfolioExtended ? EXTENDED_VIDEO_LIMIT : FREE_VIDEO_LIMIT;
   const [city, setCity] = useState(initial.city ?? "");
   const [postalCode, setPostalCode] = useState(initial.postalCode ?? "");
   const [phone, setPhone] = useState(initial.phone ?? "");
@@ -408,8 +424,46 @@ export function ProfileEditForm({
           done={photos.length > 0}
           label={`Foto's van je werk (${photos.length})`}
         >
-          <PhotoUploader professionalId={professionalId} initialPhotos={photos} />
+          <PhotoUploader
+            professionalId={professionalId}
+            initialPhotos={photos}
+            limit={photoLimit}
+          />
         </ChecklistItem>
+
+        <ChecklistItem done={videos.length > 0} label={`Video's van je werk (${videos.length})`}>
+          <VideoUploader
+            professionalId={professionalId}
+            initialVideos={videos}
+            limit={videoLimit}
+          />
+        </ChecklistItem>
+
+        <div className="rounded-md bg-gray-50 px-4 py-3 text-xs text-gray-500">
+          {portfolioExtended ? (
+            <>
+              Portfolio-uitbreiding actief
+              {portfolioExtensionExpiresAt &&
+                ` tot ${new Date(portfolioExtensionExpiresAt).toLocaleDateString("nl-NL", {
+                  day: "numeric",
+                  month: "short",
+                  year: "numeric",
+                })}`}
+              : {EXTENDED_PHOTO_LIMIT} foto&apos;s en {EXTENDED_VIDEO_LIMIT} video&apos;s.
+            </>
+          ) : (
+            <>
+              <p>
+                Gratis: {FREE_PHOTO_LIMIT} foto&apos;s + {FREE_VIDEO_LIMIT} video&apos;s. Meer
+                ruimte nodig? Dit verhoogt je VakScore niet — die is al maximaal
+                bij het gratis limiet.
+              </p>
+              <div className="mt-2">
+                <PortfolioExtensionButton />
+              </div>
+            </>
+          )}
+        </div>
 
         <div>
           <label className="text-sm font-semibold text-vak-navy">

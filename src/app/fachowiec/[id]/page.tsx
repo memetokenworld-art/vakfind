@@ -60,6 +60,13 @@ export default async function ProfessionalProfilePage({
     .eq("moderation_status", "approved")
     .order("created_at", { ascending: false });
 
+  const { data: videos } = await supabase
+    .from("professional_portfolio_videos")
+    .select("id, video_url, caption")
+    .eq("professional_id", id)
+    .eq("moderation_status", "approved")
+    .order("created_at", { ascending: false });
+
   const memberSince = new Date(pro.created_at).getFullYear();
   const fullName = owner?.full_name ?? "Onbekende vakman";
 
@@ -162,6 +169,22 @@ export default async function ProfessionalProfilePage({
                   key={photo.id}
                   src={photo.photo_url}
                   alt={photo.caption ?? ""}
+                  className="aspect-square w-full rounded object-cover"
+                />
+              ))}
+            </div>
+          </div>
+        )}
+
+        {videos && videos.length > 0 && (
+          <div className="mt-8 border-t border-gray-100 pt-6">
+            <h2 className="text-sm font-semibold text-vak-navy">Video&apos;s</h2>
+            <div className="mt-3 grid grid-cols-3 gap-2">
+              {videos.map((video) => (
+                <video
+                  key={video.id}
+                  src={video.video_url}
+                  controls
                   className="aspect-square w-full rounded object-cover"
                 />
               ))}

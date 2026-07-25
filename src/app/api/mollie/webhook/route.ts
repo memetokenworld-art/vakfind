@@ -21,12 +21,28 @@ export async function POST(request: Request) {
     return NextResponse.json({ status: molliePayment.status });
   }
 
+  const service = createServiceClient();
+  const kind = molliePayment.metadata?.kind ?? "wallet_topup";
+
+  if (kind === "portfolio_extension") {
+    const orderId = molliePayment.metadata?.order_id;
+    if (!orderId) {
+      return NextResponse.json({ error: "Missing metadata.order_id" }, { status: 400 });
+    }
+    const { error } = await service.rpc("confirm_portfolio_extension_order", {
+      p_order_id: orderId,
+    });
+    if (error) {
+      return NextResponse.json({ error: error.message }, { status: 500 });
+    }
+    return NextResponse.json({ status: "confirmed" });
+  }
+
   const localPaymentId = molliePayment.metadata?.payment_id;
   if (!localPaymentId) {
     return NextResponse.json({ error: "Missing metadata.payment_id" }, { status: 400 });
   }
 
-  const service = createServiceClient();
   const { error } = await service.rpc("confirm_payment", {
     p_payment_id: localPaymentId,
   });

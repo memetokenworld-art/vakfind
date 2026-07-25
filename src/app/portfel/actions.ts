@@ -38,7 +38,7 @@ export async function startWalletTopUp(amountEur: number, origin: string) {
     description: `VakFind portfel doładowanie €${amountEur}`,
     redirectUrl: `${origin}/portfel/verwerken?payment_id=${payment.id}`,
     webhookUrl: `${origin}/api/mollie/webhook`,
-    metadata: { payment_id: payment.id },
+    metadata: { kind: "wallet_topup", payment_id: payment.id },
   });
 
   const { error: updateError } = await supabase
