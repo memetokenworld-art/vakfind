@@ -369,9 +369,7 @@ export function ProfileEditForm({
         </div>
         <p className="rounded-md bg-gray-50 px-4 py-3 text-xs text-gray-500">
           Website en social media zijn — net als telefoon en e-mail — pas
-          zichtbaar na betaald ontgrendelen. Zo blijft VakFind de enige weg
-          om contact te leggen, ook al zou een klant je bedrijfsnaam elders
-          kunnen vinden.
+          zichtbaar voor een klant nadat die het contact heeft ontgrendeld.
         </p>
 
         <ChecklistItem done={bio.trim().length > 20} label="Bedrijfsomschrijving">
